@@ -1,14 +1,14 @@
 import React from 'react';
 import { GetStaticProps } from 'next';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
+import { useIntlayer } from 'next-intlayer';
 import Layout from '@/components/Layout';
 import { CreateListingForm } from '@/components/listings/CreateListingForm';
 import { useAuth } from '@/contexts/AuthContext';
 
 export default function CreateListingPage() {
-  const { t } = useTranslation('listings');
+  const { createListing } = useIntlayer('listings');
+  const { home, listings } = useIntlayer('common');
   const router = useRouter();
   const { user, isAuthenticated } = useAuth();
 
@@ -34,7 +34,7 @@ export default function CreateListingPage() {
         <div className="container mx-auto px-4 py-8">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-2 text-gray-600">{t('redirecting', 'Redirecting to login...')}</p>
+            <p className="mt-2 text-gray-600">Redirecting to login...</p>
           </div>
         </div>
       </Layout>
@@ -49,14 +49,14 @@ export default function CreateListingPage() {
             <ol className="inline-flex items-center space-x-1 md:space-x-3">
               <li className="inline-flex items-center">
                 <a href="/" className="inline-flex items-center text-sm font-medium text-gray-700 hover:text-blue-600">
-                  {t('home', 'Home')}
+                  {home}
                 </a>
               </li>
               <li>
                 <div className="flex items-center">
                   <span className="mx-2 text-gray-400">/</span>
                   <a href="/listings" className="text-sm font-medium text-gray-700 hover:text-blue-600">
-                    {t('listings', 'Listings')}
+                    {listings}
                   </a>
                 </div>
               </li>
@@ -64,7 +64,7 @@ export default function CreateListingPage() {
                 <div className="flex items-center">
                   <span className="mx-2 text-gray-400">/</span>
                   <span className="text-sm font-medium text-gray-500">
-                    {t('createListing', 'Create Listing')}
+                    {createListing}
                   </span>
                 </div>
               </li>
@@ -83,8 +83,6 @@ export default function CreateListingPage() {
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
-    props: {
-      ...(await serverSideTranslations(locale ?? 'hi', ['common', 'listings'])),
-    },
+    props: {},
   };
 };

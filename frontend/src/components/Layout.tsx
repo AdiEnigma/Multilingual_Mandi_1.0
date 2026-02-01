@@ -1,6 +1,6 @@
 import React, { ReactNode } from 'react';
 import Head from 'next/head';
-import { useTranslation } from 'next-i18next';
+import { useIntlayer } from 'next-intlayer';
 
 import Header from '@/components/layout/Header';
 
@@ -15,9 +15,9 @@ export default function Layout({
   title, 
   description 
 }: LayoutProps) {
-  const { t } = useTranslation('common');
+  const { appName } = useIntlayer('common');
   
-  const pageTitle = title || t('appName');
+  const pageTitle = title || appName;
   const pageDescription = description || 'AI-powered multilingual marketplace for Indian farmers and traders';
 
   return (
@@ -34,7 +34,7 @@ export default function Layout({
         <footer className="bg-gray-800 text-white py-8 mt-16">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="text-center">
-              <p>&copy; 2024 {t('appName')}. All rights reserved.</p>
+              <p>&copy; 2024 {appName}. All rights reserved.</p>
             </div>
           </div>
         </footer>

@@ -1,16 +1,17 @@
 import type { AppProps } from 'next/app';
-import { appWithTranslation } from 'next-i18next';
+import { IntlayerClientProvider } from 'next-intlayer';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 import { Toaster } from 'react-hot-toast';
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import '@/styles/globals.css';
 import { AuthProvider } from '@/contexts/AuthContext';
-import { LanguageProvider } from '@/contexts/LanguageContext';
 // import { SocketProvider } from '@/contexts/SocketContext';
 
 function App({ Component, pageProps }: AppProps) {
+  const router = useRouter();
   const [queryClient] = useState(
     () =>
       new QueryClient({
@@ -35,8 +36,8 @@ function App({ Component, pageProps }: AppProps) {
   );
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <LanguageProvider>
+    <IntlayerClientProvider locale={router.locale}>
+      <QueryClientProvider client={queryClient}>
         <AuthProvider>
           {/* <SocketProvider> */}
             <Component {...pageProps} />
@@ -66,10 +67,10 @@ function App({ Component, pageProps }: AppProps) {
             />
           {/* </SocketProvider> */}
         </AuthProvider>
-      </LanguageProvider>
-      {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
-    </QueryClientProvider>
+        {process.env.NODE_ENV === 'development' && <ReactQueryDevtools />}
+      </QueryClientProvider>
+    </IntlayerClientProvider>
   );
 }
 
-export default appWithTranslation(App);
+export default App;

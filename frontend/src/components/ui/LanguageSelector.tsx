@@ -1,8 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useIntlayer, useLocale } from 'next-intlayer';
 import { ChevronDownIcon, CheckIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
-import { useLanguage } from '@/contexts/LanguageContext';
-import useLanguagePreference from '@/hooks/useLanguagePreference';
 import { clsx } from 'clsx';
 import toast from 'react-hot-toast';
 
@@ -12,19 +10,37 @@ interface LanguageSelectorProps {
   showLabel?: boolean;
 }
 
+const languageMap: Record<string, { name: string; nativeName: string; rtl: boolean }> = {
+  en: { name: 'English', nativeName: 'English', rtl: false },
+  hi: { name: 'Hindi', nativeName: 'हिन्दी', rtl: false },
+  bn: { name: 'Bengali', nativeName: 'বাংলা', rtl: false },
+  ta: { name: 'Tamil', nativeName: 'தமிழ்', rtl: false },
+  te: { name: 'Telugu', nativeName: 'తెలుగు', rtl: false },
+  gu: { name: 'Gujarati', nativeName: 'ગુજરાતી', rtl: false },
+  mr: { name: 'Marathi', nativeName: 'मराठी', rtl: false },
+  kn: { name: 'Kannada', nativeName: 'ಕನ್ನಡ', rtl: false },
+  ml: { name: 'Malayalam', nativeName: 'മലയാളം', rtl: false },
+  pa: { name: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ', rtl: false },
+  ur: { name: 'Urdu', nativeName: 'اردو', rtl: true },
+};
+
 export function LanguageSelector({ 
   variant = 'default', 
   className = '',
   showLabel = true 
 }: LanguageSelectorProps) {
-  const { t } = useTranslation('common');
-  const { currentLanguage, getSupportedLanguages } = useLanguage();
-  const { updateLanguagePreference, isLoading } = useLanguagePreference();
+  const { success, selectLanguage } = useIntlayer('common');
+  const { locale, availableLocales, setLocale } = useLocale();
   const [isOpen, setIsOpen] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
-  const supportedLanguages = getSupportedLanguages();
-  const currentLangInfo = supportedLanguages.find(lang => lang.code === currentLanguage);
+  const currentLangInfo = languageMap[locale];
+  const supportedLanguages = availableLocales.map(localeCode => ({
+    code: localeCode,
+    name: languageMap[localeCode]?.name || localeCode,
+    nativeName: languageMap[localeCode]?.nativeName || localeCode,
+  }));
 
   // Close dropdown when clicking outside
   useEffect(() => {
@@ -39,18 +55,21 @@ export function LanguageSelector({
   }, []);
 
   const handleLanguageChange = async (languageCode: string) => {
-    if (languageCode === currentLanguage) {
+    if (languageCode === locale) {
       setIsOpen(false);
       return;
     }
 
     try {
-      await updateLanguagePreference(languageCode as any);
+      setIsLoading(true);
+      await setLocale(languageCode);
       setIsOpen(false);
-      toast.success(t('success'));
+      toast.success(success);
     } catch (error) {
       console.error('Failed to change language:', error);
-      toast.error(t('error'));
+      toast.error(error instanceof Error ? error.message : 'Failed to change language');
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -67,7 +86,7 @@ export function LanguageSelector({
           )}
           onClick={() => setIsOpen(!isOpen)}
           disabled={isLoading}
-          title={t('selectLanguage')}
+          title={selectLanguage}
         >
           <GlobeAltIcon className="h-5 w-5" />
         </button>
@@ -85,7 +104,7 @@ export function LanguageSelector({
           onClick={() => setIsOpen(!isOpen)}
           disabled={isLoading}
         >
-          <span className="font-semibold">{currentLangInfo?.code.toUpperCase()}</span>
+          <span className="font-semibold">{locale.toUpperCase()}</span>
           <ChevronDownIcon className={clsx(
             "h-3 w-3 transition-transform",
             isOpen && "rotate-180"
@@ -104,7 +123,7 @@ export function LanguageSelector({
         <GlobeAltIcon className="h-4 w-4" />
         {showLabel && (
           <>
-            <span>{currentLangInfo?.nativeName || currentLangInfo?.name}</span>
+            <span>{currentLangInfo?.nativeName || currentLangInfo?.name || locale}</span>
             <ChevronDownIcon className={clsx(
               "h-4 w-4 transition-transform",
               isOpen && "rotate-180"
@@ -123,7 +142,7 @@ export function LanguageSelector({
         <div className="absolute right-0 z-50 mt-2 w-64 bg-white border border-gray-200 rounded-md shadow-lg">
           <div className="py-1 max-h-64 overflow-y-auto">
             <div className="px-3 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wide border-b border-gray-100">
-              {t('selectLanguage')}
+              {selectLanguage}
             </div>
             
             {supportedLanguages.map((language) => (
@@ -132,7 +151,7 @@ export function LanguageSelector({
                 type="button"
                 className={clsx(
                   "w-full flex items-center justify-between px-3 py-2 text-sm text-left hover:bg-gray-50 transition-colors",
-                  currentLanguage === language.code && "bg-indigo-50 text-indigo-700"
+                  locale === language.code && "bg-indigo-50 text-indigo-700"
                 )}
                 onClick={() => handleLanguageChange(language.code)}
                 disabled={isLoading}
@@ -142,7 +161,7 @@ export function LanguageSelector({
                   <span className="text-xs text-gray-500">{language.name}</span>
                 </div>
                 
-                {currentLanguage === language.code && (
+                {locale === language.code && (
                   <CheckIcon className="h-4 w-4 text-indigo-600" />
                 )}
               </button>

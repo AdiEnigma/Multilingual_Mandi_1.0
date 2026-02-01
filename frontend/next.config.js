@@ -1,10 +1,16 @@
-const { i18n } = require('./next-i18next.config');
+const { withIntlayer } = require('next-intlayer/server');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
   swcMinify: true,
-  i18n,
+  
+  // Internationalization
+  i18n: {
+    locales: ['en', 'hi', 'bn', 'ta', 'te', 'gu', 'mr', 'kn', 'ml', 'pa', 'ur'],
+    defaultLocale: 'hi',
+    localeDetection: false, // Disable automatic locale detection
+  },
   
   // Environment variables
   env: {
@@ -19,7 +25,7 @@ const nextConfig = {
   },
 
   // Webpack configuration
-  webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
+  webpack: (config) => {
     // Add custom webpack configurations if needed
     return config;
   },
@@ -65,4 +71,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+module.exports = withIntlayer(nextConfig);

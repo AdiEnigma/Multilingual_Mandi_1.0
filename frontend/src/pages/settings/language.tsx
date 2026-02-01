@@ -1,6 +1,5 @@
 import { GetStaticProps } from 'next';
-import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
-import { useTranslation } from 'next-i18next';
+import { useIntlayer, useLocale } from 'next-intlayer';
 import Head from 'next/head';
 import { useState } from 'react';
 import { CheckIcon, GlobeAltIcon } from '@heroicons/react/24/outline';
@@ -8,26 +7,43 @@ import { clsx } from 'clsx';
 import toast from 'react-hot-toast';
 
 import Layout from '@/components/Layout';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { useAuth } from '@/contexts/AuthContext';
 
+const languageMap: Record<string, { name: string; nativeName: string; rtl: boolean }> = {
+  en: { name: 'English', nativeName: 'English', rtl: false },
+  hi: { name: 'Hindi', nativeName: 'हिन्दी', rtl: false },
+  bn: { name: 'Bengali', nativeName: 'বাংলা', rtl: false },
+  ta: { name: 'Tamil', nativeName: 'தமிழ்', rtl: false },
+  te: { name: 'Telugu', nativeName: 'తెలుగు', rtl: false },
+  gu: { name: 'Gujarati', nativeName: 'ગુજરાતી', rtl: false },
+  mr: { name: 'Marathi', nativeName: 'मराठी', rtl: false },
+  kn: { name: 'Kannada', nativeName: 'ಕನ್ನಡ', rtl: false },
+  ml: { name: 'Malayalam', nativeName: 'മലയാളം', rtl: false },
+  pa: { name: 'Punjabi', nativeName: 'ਪੰਜਾਬੀ', rtl: false },
+  ur: { name: 'Urdu', nativeName: 'اردو', rtl: true },
+};
+
 export default function LanguageSettingsPage() {
-  const { t } = useTranslation('common');
-  const { currentLanguage, setLanguage, getSupportedLanguages } = useLanguage();
+  const { appName, settings, success } = useIntlayer('common');
+  const { locale, availableLocales, setLocale } = useLocale();
   const { user, updateUserProfile } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
 
-  const supportedLanguages = getSupportedLanguages();
+  const supportedLanguages = availableLocales.map(localeCode => ({
+    code: localeCode,
+    name: languageMap[localeCode]?.name || localeCode,
+    nativeName: languageMap[localeCode]?.nativeName || localeCode,
+  }));
 
   const handleLanguageChange = async (languageCode: string) => {
-    if (languageCode === currentLanguage || isUpdating) {
+    if (languageCode === locale || isUpdating) {
       return;
     }
 
     setIsUpdating(true);
     try {
-      // Update language in context
-      await setLanguage(languageCode as any);
+      // Update language using Intlayer
+      await setLocale(languageCode);
 
       // Update user profile if logged in
       if (user) {
@@ -36,19 +52,21 @@ export default function LanguageSettingsPage() {
         });
       }
 
-      toast.success(t('success'));
+      toast.success(success);
     } catch (error) {
       console.error('Failed to change language:', error);
-      toast.error(t('error'));
+      toast.error(error instanceof Error ? error.message : 'Failed to change language');
     } finally {
       setIsUpdating(false);
     }
   };
 
+  const currentLangInfo = languageMap[locale];
+
   return (
     <>
       <Head>
-        <title>{t('language')} {t('settings')} - {t('appName')}</title>
+        <title>Language {settings} - {appName}</title>
         <meta name="description" content="Change your language preferences" />
       </Head>
       
@@ -59,7 +77,7 @@ export default function LanguageSettingsPage() {
             <div className="flex items-center space-x-3 mb-4">
               <GlobeAltIcon className="h-8 w-8 text-indigo-600" />
               <h1 className="text-3xl font-bold text-gray-900">
-                {t('language')} {t('settings')}
+                Language {settings}
               </h1>
             </div>
             <p className="text-gray-600">
@@ -78,10 +96,10 @@ export default function LanguageSettingsPage() {
               </div>
               <div>
                 <p className="font-medium text-gray-900">
-                  {supportedLanguages.find(lang => lang.code === currentLanguage)?.nativeName}
+                  {currentLangInfo?.nativeName || locale}
                 </p>
                 <p className="text-sm text-gray-500">
-                  {supportedLanguages.find(lang => lang.code === currentLanguage)?.name}
+                  {currentLangInfo?.name || locale}
                 </p>
               </div>
             </div>
@@ -105,7 +123,7 @@ export default function LanguageSettingsPage() {
                   type="button"
                   className={clsx(
                     'w-full flex items-center justify-between p-4 text-left hover:bg-gray-50 transition-colors',
-                    currentLanguage === language.code && 'bg-indigo-50',
+                    locale === language.code && 'bg-indigo-50',
                     isUpdating && 'opacity-50 cursor-not-allowed'
                   )}
                   onClick={() => handleLanguageChange(language.code)}
@@ -114,7 +132,7 @@ export default function LanguageSettingsPage() {
                   <div className="flex items-center space-x-4">
                     <div className={clsx(
                       'w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold',
-                      currentLanguage === language.code
+                      locale === language.code
                         ? 'bg-indigo-600 text-white'
                         : 'bg-gray-100 text-gray-600'
                     )}>
@@ -130,7 +148,7 @@ export default function LanguageSettingsPage() {
                     </div>
                   </div>
 
-                  {currentLanguage === language.code && (
+                  {locale === language.code && (
                     <CheckIcon className="h-5 w-5 text-indigo-600" />
                   )}
                 </button>
@@ -160,7 +178,7 @@ export default function LanguageSettingsPage() {
           </div>
 
           {/* RTL Support Notice */}
-          {['ur', 'ks', 'sd'].includes(currentLanguage) && (
+          {['ur'].includes(locale) && (
             <div className="mt-4 bg-yellow-50 border border-yellow-200 rounded-lg p-4">
               <p className="text-sm text-yellow-800">
                 <strong>Note:</strong> Right-to-left (RTL) text direction is enabled for this language.
@@ -175,11 +193,6 @@ export default function LanguageSettingsPage() {
 
 export const getStaticProps: GetStaticProps = async ({ locale }) => {
   return {
-    props: {
-      ...(await serverSideTranslations(locale ?? 'hi', [
-        'common',
-        'auth',
-      ])),
-    },
+    props: {},
   };
 };

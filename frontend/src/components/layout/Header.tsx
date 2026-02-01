@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
-import { useTranslation } from 'next-i18next';
+import { useIntlayer } from 'next-intlayer';
 import { 
   Bars3Icon, 
   XMarkIcon, 
@@ -13,7 +13,6 @@ import {
 import { clsx } from 'clsx';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
 import LanguageSelector from '@/components/ui/LanguageSelector';
 
 interface HeaderProps {
@@ -21,27 +20,37 @@ interface HeaderProps {
 }
 
 export function Header({ className = '' }: HeaderProps) {
-  const { t } = useTranslation('common');
+  const { 
+    appName, 
+    home, 
+    listings, 
+    search, 
+    profile, 
+    dashboard, 
+    settings, 
+    login, 
+    register, 
+    logout 
+  } = useIntlayer('common');
   const router = useRouter();
-  const { user, isAuthenticated, logout } = useAuth();
-  const { isRTL } = useLanguage();
+  const { user, isAuthenticated, logout: authLogout } = useAuth();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navigation = [
-    { name: t('home'), href: '/', current: router.pathname === '/' },
-    { name: t('listings'), href: '/listings', current: router.pathname.startsWith('/listings') },
-    { name: t('search'), href: '/search', current: router.pathname === '/search' },
+    { name: home, href: '/', current: router.pathname === '/' },
+    { name: listings, href: '/listings', current: router.pathname.startsWith('/listings') },
+    { name: search, href: '/search', current: router.pathname === '/search' },
   ];
 
   const userNavigation = [
-    { name: t('profile'), href: '/profile' },
-    { name: t('dashboard'), href: '/dashboard' },
-    { name: t('settings'), href: '/settings' },
+    { name: profile, href: '/profile' },
+    { name: dashboard, href: '/dashboard' },
+    { name: settings, href: '/settings' },
   ];
 
   const handleLogout = async () => {
     try {
-      await logout();
+      await authLogout();
       router.push('/');
     } catch (error) {
       console.error('Logout failed:', error);
@@ -59,7 +68,7 @@ export function Header({ className = '' }: HeaderProps) {
                 <span className="text-white font-bold text-sm">M</span>
               </div>
               <span className="text-xl font-bold text-gray-900">
-                {t('appName')}
+                {appName}
               </span>
             </Link>
           </div>
@@ -154,7 +163,7 @@ export function Header({ className = '' }: HeaderProps) {
                         onClick={handleLogout}
                         className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
                       >
-                        {t('logout')}
+                        {logout}
                       </button>
                     </div>
                   )}
@@ -166,13 +175,13 @@ export function Header({ className = '' }: HeaderProps) {
                   href="/auth/login"
                   className="text-gray-700 hover:text-indigo-600 px-3 py-2 rounded-md text-sm font-medium"
                 >
-                  {t('login')}
+                  {login}
                 </Link>
                 <Link
                   href="/auth/register"
                   className="bg-indigo-600 text-white hover:bg-indigo-700 px-4 py-2 rounded-md text-sm font-medium transition-colors"
                 >
-                  {t('register')}
+                  {register}
                 </Link>
               </div>
             )}
@@ -220,14 +229,14 @@ export function Header({ className = '' }: HeaderProps) {
                   className="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:text-indigo-600 hover:bg-gray-50"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {t('login')}
+                  {login}
                 </Link>
                 <Link
                   href="/auth/register"
                   className="block px-3 py-2 rounded-md text-base font-medium bg-indigo-600 text-white hover:bg-indigo-700"
                   onClick={() => setIsMobileMenuOpen(false)}
                 >
-                  {t('register')}
+                  {register}
                 </Link>
               </div>
             )}

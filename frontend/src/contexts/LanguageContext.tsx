@@ -48,27 +48,35 @@ interface LanguageProviderProps {
 
 export function LanguageProvider({ children }: LanguageProviderProps) {
   const router = useRouter();
-  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>('hi');
+  const [currentLanguage, setCurrentLanguage] = useState<SupportedLanguage>(() => {
+    // Initialize from router locale first, then fallback to stored preference
+    const routerLocale = router.locale as SupportedLanguage;
+    if (routerLocale && languageMap[routerLocale]) {
+      return routerLocale;
+    }
+    return 'hi'; // Default fallback
+  });
 
   useEffect(() => {
-    // Initialize language from router locale or localStorage
+    // Update current language when router locale changes
     const routerLocale = router.locale as SupportedLanguage;
-    const storedLanguage = localStorage.getItem('preferred_language') as SupportedLanguage;
-    
-    if (routerLocale && languageMap[routerLocale]) {
+    if (routerLocale && languageMap[routerLocale] && routerLocale !== currentLanguage) {
       setCurrentLanguage(routerLocale);
-    } else if (storedLanguage && languageMap[storedLanguage]) {
-      setCurrentLanguage(storedLanguage);
+      // Store the preference
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('preferred_language', routerLocale);
+      }
     }
-  }, [router.locale]);
+  }, [router.locale, currentLanguage]);
 
   const setLanguage = async (language: SupportedLanguage) => {
     try {
       // Store preference
-      localStorage.setItem('preferred_language', language);
-      setCurrentLanguage(language);
+      if (typeof window !== 'undefined') {
+        localStorage.setItem('preferred_language', language);
+      }
       
-      // Update Next.js locale
+      // Update Next.js locale - this will trigger a page reload with new locale
       await router.push(router.asPath, router.asPath, { locale: language });
       
       logger.info('Language changed to:', language);
@@ -101,7 +109,7 @@ export function LanguageProvider({ children }: LanguageProviderProps) {
 
   return (
     <LanguageContext.Provider value={value}>
-      <div dir={isRTL ? 'rtl' : 'ltr'}>
+      <div dir={isRTL ? 'rtl' : 'ltr'} className={isRTL ? 'rtl' : 'ltr'}>
         {children}
       </div>
     </LanguageContext.Provider>

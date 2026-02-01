@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from 'next-i18next';
+import { useIntlayer, useLocale } from 'next-intlayer';
 import { useAuth } from '@/contexts/AuthContext';
-import { useLanguage } from '@/contexts/LanguageContext';
 import { listingService, categoryService, CreateListingData } from '@/services/listings';
 import { ProductCategory } from '@marketplace-mandi/shared';
 
@@ -11,9 +10,38 @@ interface CreateListingFormProps {
 }
 
 export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProps) {
-  const { t } = useTranslation('listings');
+  const {
+    createListing,
+    productName,
+    enterProductName,
+    category,
+    selectCategory,
+    description,
+    enterDescription,
+    quantity,
+    unit,
+    askingPrice,
+    priceUnit,
+    state,
+    district,
+    pincode,
+    cancel,
+    creating,
+    kg,
+    gram,
+    ton,
+    piece,
+    dozen,
+    liter,
+    perKg,
+    perGram,
+    perTon,
+    perPiece,
+    perDozen,
+    perLiter,
+  } = useIntlayer('listings');
   const { user } = useAuth();
-  const { currentLanguage } = useLanguage();
+  const { locale } = useLocale();
   
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [loading, setLoading] = useState(false);
@@ -38,7 +66,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
       pincode: user?.location?.pincode || '',
     },
     images: [],
-    language: currentLanguage,
+    language: locale,
   });
 
   useEffect(() => {
@@ -110,7 +138,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
 
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white rounded-lg shadow-md">
-      <h2 className="text-2xl font-bold mb-6">{t('createListing', 'Create New Listing')}</h2>
+      <h2 className="text-2xl font-bold mb-6">{createListing}</h2>
       
       {error && (
         <div className="mb-4 p-4 bg-red-100 border border-red-400 text-red-700 rounded">
@@ -122,7 +150,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
         {/* Product Name */}
         <div>
           <label htmlFor="productName" className="block text-sm font-medium text-gray-700 mb-2">
-            {t('productName', 'Product Name')} *
+            {productName} *
           </label>
           <input
             type="text"
@@ -132,14 +160,14 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
             onChange={handleInputChange}
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder={t('enterProductName', 'Enter product name')}
+            placeholder={enterProductName}
           />
         </div>
 
         {/* Category */}
         <div>
           <label htmlFor="categoryId" className="block text-sm font-medium text-gray-700 mb-2">
-            {t('category', 'Category')} *
+            {category} *
           </label>
           <select
             id="categoryId"
@@ -149,7 +177,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
             required
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
-            <option value="">{t('selectCategory', 'Select a category')}</option>
+            <option value="">{selectCategory}</option>
             {categories.map(category => (
               <option key={category.id} value={category.id}>
                 {category.name}
@@ -161,7 +189,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
         {/* Description */}
         <div>
           <label htmlFor="description" className="block text-sm font-medium text-gray-700 mb-2">
-            {t('description', 'Description')}
+            {description}
           </label>
           <textarea
             id="description"
@@ -170,7 +198,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
             onChange={handleInputChange}
             rows={4}
             className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder={t('enterDescription', 'Enter product description')}
+            placeholder={enterDescription}
           />
         </div>
 
@@ -178,7 +206,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="quantity.amount" className="block text-sm font-medium text-gray-700 mb-2">
-              {t('quantity', 'Quantity')} *
+              {quantity} *
             </label>
             <input
               type="number"
@@ -194,7 +222,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
           </div>
           <div>
             <label htmlFor="quantity.unit" className="block text-sm font-medium text-gray-700 mb-2">
-              {t('unit', 'Unit')} *
+              {unit} *
             </label>
             <select
               id="quantity.unit"
@@ -204,12 +232,12 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="kg">{t('kg', 'Kg')}</option>
-              <option value="gram">{t('gram', 'Gram')}</option>
-              <option value="ton">{t('ton', 'Ton')}</option>
-              <option value="piece">{t('piece', 'Piece')}</option>
-              <option value="dozen">{t('dozen', 'Dozen')}</option>
-              <option value="liter">{t('liter', 'Liter')}</option>
+              <option value="kg">{kg}</option>
+              <option value="gram">{gram}</option>
+              <option value="ton">{ton}</option>
+              <option value="piece">{piece}</option>
+              <option value="dozen">{dozen}</option>
+              <option value="liter">{liter}</option>
             </select>
           </div>
         </div>
@@ -218,7 +246,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label htmlFor="askingPrice.amount" className="block text-sm font-medium text-gray-700 mb-2">
-              {t('askingPrice', 'Asking Price')} (₹) *
+              {askingPrice} (₹) *
             </label>
             <input
               type="number"
@@ -234,7 +262,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
           </div>
           <div>
             <label htmlFor="askingPrice.unit" className="block text-sm font-medium text-gray-700 mb-2">
-              {t('priceUnit', 'Price Unit')} *
+              {priceUnit} *
             </label>
             <select
               id="askingPrice.unit"
@@ -244,12 +272,12 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
               required
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="kg">{t('perKg', 'Per Kg')}</option>
-              <option value="gram">{t('perGram', 'Per Gram')}</option>
-              <option value="ton">{t('perTon', 'Per Ton')}</option>
-              <option value="piece">{t('perPiece', 'Per Piece')}</option>
-              <option value="dozen">{t('perDozen', 'Per Dozen')}</option>
-              <option value="liter">{t('perLiter', 'Per Liter')}</option>
+              <option value="kg">{perKg}</option>
+              <option value="gram">{perGram}</option>
+              <option value="ton">{perTon}</option>
+              <option value="piece">{perPiece}</option>
+              <option value="dozen">{perDozen}</option>
+              <option value="liter">{perLiter}</option>
             </select>
           </div>
         </div>
@@ -258,7 +286,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
         <div className="grid grid-cols-3 gap-4">
           <div>
             <label htmlFor="location.state" className="block text-sm font-medium text-gray-700 mb-2">
-              {t('state', 'State')} *
+              {state} *
             </label>
             <input
               type="text"
@@ -272,7 +300,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
           </div>
           <div>
             <label htmlFor="location.district" className="block text-sm font-medium text-gray-700 mb-2">
-              {t('district', 'District')} *
+              {district} *
             </label>
             <input
               type="text"
@@ -286,7 +314,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
           </div>
           <div>
             <label htmlFor="location.pincode" className="block text-sm font-medium text-gray-700 mb-2">
-              {t('pincode', 'Pincode')} *
+              {pincode} *
             </label>
             <input
               type="text"
@@ -309,7 +337,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
               onClick={onCancel}
               className="px-6 py-2 border border-gray-300 rounded-md text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              {t('cancel', 'Cancel')}
+              {cancel}
             </button>
           )}
           <button
@@ -317,7 +345,7 @@ export function CreateListingForm({ onSuccess, onCancel }: CreateListingFormProp
             disabled={loading}
             className="px-6 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {loading ? t('creating', 'Creating...') : t('createListing', 'Create Listing')}
+            {loading ? creating : createListing}
           </button>
         </div>
       </form>

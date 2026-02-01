@@ -1,0 +1,136 @@
+{
+  "internationalization": {
+    "locales": [
+      "en",
+      "hi",
+      "bn",
+      "ta",
+      "te",
+      "gu",
+      "mr",
+      "kn",
+      "ml",
+      "pa",
+      "ur"
+    ],
+    "requiredLocales": [
+      "en",
+      "hi",
+      "bn",
+      "ta",
+      "te",
+      "gu",
+      "mr",
+      "kn",
+      "ml",
+      "pa",
+      "ur"
+    ],
+    "strictMode": "inclusive",
+    "defaultLocale": "hi"
+  },
+  "routing": {
+    "mode": "prefix-no-default",
+    "storage": [
+      "cookie",
+      "header"
+    ],
+    "basePath": ""
+  },
+  "content": {
+    "fileExtensions": [
+      ".content.ts",
+      ".content.js",
+      ".content.cjs",
+      ".content.mjs",
+      ".content.json",
+      ".content.json5",
+      ".content.jsonc",
+      ".content.tsx",
+      ".content.jsx"
+    ],
+    "baseDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend",
+    "contentDir": [
+      "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend"
+    ],
+    "codeDir": [
+      "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend"
+    ],
+    "excludedPath": [
+      "**/node_modules/**",
+      "**/dist/**",
+      "**/build/**",
+      "**/.intlayer/**",
+      "**/.next/**",
+      "**/.nuxt/**",
+      "**/.expo/**",
+      "**/.vercel/**",
+      "**/.turbo/**",
+      "**/.tanstack/**"
+    ],
+    "watch": true,
+    "watchedFilesPattern": [
+      "/**/*.content.ts",
+      "/**/*.content.js",
+      "/**/*.content.cjs",
+      "/**/*.content.mjs",
+      "/**/*.content.json",
+      "/**/*.content.json5",
+      "/**/*.content.jsonc",
+      "/**/*.content.tsx",
+      "/**/*.content.jsx"
+    ],
+    "watchedFilesPatternWithPath": [
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.ts",
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.js",
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.cjs",
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.mjs",
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.json",
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.json5",
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.jsonc",
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.tsx",
+      "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/**/*.content.jsx"
+    ]
+  },
+  "system": {
+    "moduleAugmentationDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\types",
+    "unmergedDictionariesDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\unmerged_dictionary",
+    "remoteDictionariesDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\remote_dictionary",
+    "dictionariesDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\dictionary",
+    "dynamicDictionariesDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\dynamic_dictionary",
+    "fetchDictionariesDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\fetch_dictionary",
+    "typesDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\types",
+    "mainDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\main",
+    "configDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\config",
+    "cacheDir": "C:\\Users\\ADITYA\\Desktop\\AI for Bharat\\frontend\\.intlayer\\cache",
+    "outputFilesPatternWithPath": "C:/Users/ADITYA/Desktop/AI for Bharat/frontend/.intlayer/dictionary/**/*.json"
+  },
+  "editor": {
+    "applicationURL": "",
+    "editorURL": "http://localhost:8000",
+    "cmsURL": "https://app.intlayer.org",
+    "backendURL": "https://back.intlayer.org",
+    "port": 8000,
+    "enabled": true,
+    "dictionaryPriorityStrategy": "local_first",
+    "liveSync": true,
+    "liveSyncPort": 4000,
+    "liveSyncURL": "http://localhost:4000"
+  },
+  "log": {
+    "mode": "default",
+    "prefix": "\u001b[38;5;239m[intlayer] \u001b[0m"
+  },
+  "ai": {},
+  "dictionary": {
+    "fill": true,
+    "contentAutoTransformation": false,
+    "location": "local",
+    "importMode": "static"
+  },
+  "metadata": {
+    "name": "Intlayer",
+    "version": "8.0.2",
+    "doc": "https://intlayer.org/docs"
+  }
+}
